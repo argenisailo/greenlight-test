@@ -1,19 +1,20 @@
 import React from 'react';
-import { Shield, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const AuthProvider = ({ onLogin }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-canopy-bg flex items-center justify-center px-4">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <div className="mx-auto w-16 h-16 bg-primary-600 rounded-xl flex items-center justify-center mb-4">
-              <Shield className="h-8 w-8 text-white" />
+            {/* Canopy-style logo */}
+            <div className="mx-auto w-16 h-16 bg-canopy-blue rounded-lg flex items-center justify-center mb-4">
+              <div className="w-8 h-8 border-2 border-white transform rotate-45"></div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-semibold text-canopy-text mb-2">
               Client Management System
             </h1>
-            <p className="text-gray-600">
+            <p className="text-canopy-textMuted">
               Sign in with your Microsoft account to access your clients
             </p>
           </div>
@@ -21,7 +22,7 @@ const AuthProvider = ({ onLogin }) => {
           <div className="space-y-4">
             <button
               onClick={onLogin}
-              className="w-full flex items-center justify-center px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              className="w-full flex items-center justify-center px-4 py-3 bg-canopy-blue hover:bg-canopy-blueHover text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-canopy-blue focus:ring-offset-2"
             >
               <img 
                 src="https://developer.microsoft.com/favicon.ico" 
@@ -33,14 +34,14 @@ const AuthProvider = ({ onLogin }) => {
             </button>
 
             <div className="text-center">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-canopy-textMuted">
                 Demo Mode: Click above to continue with mock authentication
               </p>
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="text-xs text-gray-500 text-center space-y-1">
+          <div className="mt-8 pt-6 border-t border-canopy-border">
+            <div className="text-xs text-canopy-textMuted text-center space-y-1">
               <p>🔒 Secure enterprise authentication</p>
               <p>📊 Client management with real-time search</p>
               <p>📁 SharePoint integration for documents</p>
