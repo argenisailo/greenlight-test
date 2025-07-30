@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import './App.css';
 
 // Components
+import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import ClientList from './components/ClientList';
 import ClientDetail from './components/ClientDetail';
@@ -115,10 +116,10 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-canopy-bg flex items-center justify-center">
         <div className="text-center">
-          <div className="spinner mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Client Management System...</p>
+          <div className="canopy-spinner mx-auto mb-4"></div>
+          <p className="text-canopy-textMuted">Loading Client Management System...</p>
         </div>
       </div>
     );
@@ -132,55 +133,61 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Header 
-          user={user}
-          onLogout={handleLogout}
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          selectedClientType={selectedClientType}
-          onClientTypeChange={setSelectedClientType}
-        />
+      <div className="min-h-screen bg-canopy-bg">
+        <Sidebar />
         
-        <main className="container mx-auto px-4 py-8">
-          <Routes>
-            <Route 
-              path="/" 
-              element={
-                <ClientList 
-                  clients={filteredClients}
-                  loading={loading}
-                  onClientDeleted={handleClientDeleted}
-                />
-              } 
-            />
-            <Route 
-              path="/create" 
-              element={
-                <CreateClient 
-                  onClientCreated={handleClientCreated}
-                />
-              } 
-            />
-            <Route 
-              path="/client/:id" 
-              element={
-                <ClientDetail 
-                  onClientUpdated={handleClientUpdated}
-                  onClientDeleted={handleClientDeleted}
-                />
-              } 
-            />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
+        <div className="canopy-main-content">
+          <Header 
+            user={user}
+            onLogout={handleLogout}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            selectedClientType={selectedClientType}
+            onClientTypeChange={setSelectedClientType}
+          />
+          
+          <main className="p-6">
+            <Routes>
+              <Route 
+                path="/" 
+                element={
+                  <ClientList 
+                    clients={filteredClients}
+                    loading={loading}
+                    onClientDeleted={handleClientDeleted}
+                    searchTerm={searchTerm}
+                    selectedClientType={selectedClientType}
+                  />
+                } 
+              />
+              <Route 
+                path="/create" 
+                element={
+                  <CreateClient 
+                    onClientCreated={handleClientCreated}
+                  />
+                } 
+              />
+              <Route 
+                path="/client/:id" 
+                element={
+                  <ClientDetail 
+                    onClientUpdated={handleClientUpdated}
+                    onClientDeleted={handleClientDeleted}
+                  />
+                } 
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+        </div>
         
         <Toaster 
           position="top-right"
           toastOptions={{
             duration: 4000,
             style: {
-              background: '#363636',
+              background: '#1f2937',
               color: '#fff',
             },
           }}
