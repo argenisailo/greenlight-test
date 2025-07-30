@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, User, Mail, Phone, MapPin, Calendar, Eye, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Plus, Filter, RotateCcw, Eye, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { clientService } from '../services/clientService';
 
-const ClientList = ({ clients, loading, onClientDeleted }) => {
+const ClientList = ({ clients, loading, onClientDeleted, searchTerm, selectedClientType }) => {
+  const [selectedClients, setSelectedClients] = useState([]);
+  const [activeTab, setActiveTab] = useState('active');
+
+  const tabs = [
+    { id: 'active', label: 'Active Clients', count: clients.filter(c => c.ownership?.relationship_type !== 'prospect').length },
+    { id: 'business', label: 'Business', count: clients.filter(c => c.type === 'company').length },
+    { id: 'individual', label: 'Individual', count: clients.filter(c => c.type === 'person').length },
+    { id: 'prospect', label: 'Prospect', count: clients.filter(c => c.ownership?.relationship_type === 'prospect').length },
+    { id: 'groups', label: 'Groups with no portal users', count: 0 },
+    { id: 'kc', label: 'KC Operations', count: 0 },
+  ];
+
   const handleDeleteClient = async (clientId, clientName) => {
     if (window.confirm(`Are you sure you want to delete ${clientName}? This action cannot be undone.`)) {
       try {
@@ -18,27 +30,69 @@ const ClientList = ({ clients, loading, onClientDeleted }) => {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
   const getClientDisplayName = (client) => {
     if (client.type === 'person') {
-      return `${client.data.first_name || ''} ${client.data.last_name || ''}`.trim();
+      return `${client.data.first_name || ''} ${client.data.last_name || ''}`.trim() || 'Unnamed Person';
     } else {
       return client.data.company_name || 'Unnamed Company';
     }
   };
 
-  const getClientSubtitle = (client) => {
+  const getClientContact = (client) => {
     if (client.type === 'person') {
-      return client.data.company || client.data.email || '';
+      return client.data.email || '';
     } else {
       return client.data.contact_person || client.data.email || '';
+    }
+  };
+
+  const getPortalStatus = (client) => {
+    // Mock portal status - in real app this would come from backend
+    const hasPortal = Math.random() > 0.5;
+    return hasPortal ? 'With users' : 'Without users';
+  };
+
+  const getClientStatus = () => {
+    return 'Client'; // In real app, this could be dynamic
+  };
+
+  const getBusinessType = (client) => {
+    if (client.type === 'company') {
+      if (client.data.size && client.data.size.includes('500')) {
+        return 'C-Corporation';
+      }
+      return 'S-Corporation';
+    }
+    return '—';
+  };
+
+  const filteredClients = clients.filter(client => {
+    switch (activeTab) {
+      case 'business':
+        return client.type === 'company';
+      case 'individual':
+        return client.type === 'person';
+      case 'prospect':
+        return client.ownership?.relationship_type === 'prospect';
+      case 'active':
+      default:
+        return client.ownership?.relationship_type !== 'prospect';
+    }
+  });
+
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      setSelectedClients(filteredClients.map(c => c.id));
+    } else {
+      setSelectedClients([]);
+    }
+  };
+
+  const handleSelectClient = (clientId, checked) => {
+    if (checked) {
+      setSelectedClients(prev => [...prev, clientId]);
+    } else {
+      setSelectedClients(prev => prev.filter(id => id !== clientId));
     }
   };
 
@@ -46,147 +100,179 @@ const ClientList = ({ clients, loading, onClientDeleted }) => {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="spinner mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading clients...</p>
+          <div className="canopy-spinner mx-auto mb-4"></div>
+          <p className="text-canopy-textMuted">Loading clients...</p>
         </div>
-      </div>
-    );
-  }
-
-  if (clients.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <User className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No clients found</h3>
-        <p className="text-gray-600 mb-6">
-          Get started by creating your first client or adjust your search criteria.
-        </p>
-        <Link
-          to="/create"
-          className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
-        >
-          <User className="h-4 w-4 mr-2" />
-          Add Your First Client
-        </Link>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Results Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Clients</h2>
-          <p className="text-gray-600 mt-1">
-            {clients.length} client{clients.length !== 1 ? 's' : ''} found
-          </p>
+    <div className="bg-white rounded-lg shadow-sm">
+      {/* Tabs */}
+      <div className="canopy-tabs px-6">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`canopy-tab ${activeTab === tab.id ? 'active' : ''}`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Controls */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-canopy-border">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 text-sm text-canopy-textMuted">
+            <span>{filteredClients.length} clients</span>
+          </div>
+          
+          <button className="canopy-btn-secondary text-sm flex items-center">
+            <Filter className="h-4 w-4 mr-1" />
+            Save 1 filter
+          </button>
+          
+          <button className="text-sm text-canopy-blue hover:text-canopy-blueHover">
+            <RotateCcw className="h-4 w-4 mr-1 inline" />
+            Reset filter
+          </button>
         </div>
       </div>
 
-      {/* Client Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {clients.map((client) => (
-          <div key={client.id} className="client-card group">
-            {/* Client Type Badge */}
-            <div className="flex items-center justify-between mb-4">
-              <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                client.type === 'person' 
-                  ? 'bg-blue-100 text-blue-800' 
-                  : 'bg-green-100 text-green-800'
-              }`}>
-                {client.type === 'person' ? (
-                  <User className="h-3 w-3 mr-1" />
-                ) : (
-                  <Building2 className="h-3 w-3 mr-1" />
-                )}
-                {client.type === 'person' ? 'Person' : 'Company'}
-              </div>
-              
-              {/* Action Buttons */}
-              <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Link
-                  to={`/client/${client.id}`}
-                  className="p-1.5 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
-                  title="View Details"
-                >
-                  <Eye className="h-4 w-4" />
-                </Link>
-                <button
-                  onClick={() => handleDeleteClient(client.id, getClientDisplayName(client))}
-                  className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                  title="Delete Client"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Client Info */}
-            <div className="space-y-3">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                  {getClientDisplayName(client)}
-                </h3>
-                {getClientSubtitle(client) && (
-                  <p className="text-sm text-gray-600">
-                    {getClientSubtitle(client)}
-                  </p>
-                )}
-              </div>
-
-              {/* Contact Info */}
-              <div className="space-y-2">
-                {client.data.email && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Mail className="h-4 w-4 mr-2 text-gray-400" />
-                    <span className="truncate">{client.data.email}</span>
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="canopy-table">
+          <thead>
+            <tr>
+              <th className="w-12">
+                <input
+                  type="checkbox"
+                  checked={selectedClients.length === filteredClients.length && filteredClients.length > 0}
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                  className="rounded border-canopy-border"
+                />
+              </th>
+              <th>Client Name</th>
+              <th>Client Portal User</th>
+              <th>Client Status</th>
+              <th>Business Type</th>
+              <th>EIN</th>
+              <th className="w-12"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredClients.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="text-center py-12">
+                  <div className="text-canopy-textMuted">
+                    <Plus className="mx-auto h-12 w-12 mb-4" />
+                    <h3 className="text-lg font-medium text-canopy-text mb-2">No clients found</h3>
+                    <p className="mb-6">
+                      Get started by creating your first client or adjust your search criteria.
+                    </p>
+                    <Link
+                      to="/create"
+                      className="canopy-btn-primary inline-flex items-center"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Your First Client
+                    </Link>
                   </div>
-                )}
+                </td>
+              </tr>
+            ) : (
+              filteredClients.map((client) => {
+                const portalStatus = getPortalStatus(client);
+                const isSelected = selectedClients.includes(client.id);
                 
-                {client.data.phone && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                    <span>{client.data.phone}</span>
-                  </div>
-                )}
-                
-                {client.data.address && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                    <span className="truncate">{client.data.address}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Metadata */}
-              <div className="pt-3 border-t border-gray-100">
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <div className="flex items-center">
-                    <Calendar className="h-3 w-3 mr-1" />
-                    <span>Created {formatDate(client.created_at)}</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    {client.notes && client.notes.length > 0 && (
-                      <span>{client.notes.length} note{client.notes.length !== 1 ? 's' : ''}</span>
-                    )}
-                    {client.tracking && client.tracking.length > 0 && (
-                      <span>{client.tracking.length} event{client.tracking.length !== 1 ? 's' : ''}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Click to View */}
-            <Link 
-              to={`/client/${client.id}`}
-              className="absolute inset-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              aria-label={`View details for ${getClientDisplayName(client)}`}
-            />
-          </div>
-        ))}
+                return (
+                  <tr key={client.id} className="group">
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => handleSelectClient(client.id, e.target.checked)}
+                        className="rounded border-canopy-border"
+                      />
+                    </td>
+                    <td>
+                      <Link
+                        to={`/client/${client.id}`}
+                        className="text-canopy-blue hover:text-canopy-blueHover font-medium"
+                      >
+                        {getClientDisplayName(client)}
+                      </Link>
+                    </td>
+                    <td>
+                      <div className="flex items-center">
+                        <div className={`w-2 h-2 rounded-full mr-2 ${
+                          portalStatus === 'With users' ? 'bg-green-500' : 'bg-gray-400'
+                        }`}></div>
+                        <span className="text-canopy-textMuted">{portalStatus}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="canopy-status-indicator canopy-status-active">
+                        {getClientStatus()}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="text-canopy-textMuted">{getBusinessType(client)}</span>
+                    </td>
+                    <td>
+                      <span className="text-canopy-textMuted">—</span>
+                    </td>
+                    <td>
+                      <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Link
+                          to={`/client/${client.id}`}
+                          className="p-1 text-canopy-textMuted hover:text-canopy-blue rounded transition-colors"
+                          title="View Details"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteClient(client.id, getClientDisplayName(client))}
+                          className="p-1 text-canopy-textMuted hover:text-red-600 rounded transition-colors"
+                          title="Delete Client"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                        <button className="p-1 text-canopy-textMuted hover:text-canopy-text rounded transition-colors">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
+
+      {/* Pagination */}
+      {filteredClients.length > 0 && (
+        <div className="flex items-center justify-between px-6 py-4 border-t border-canopy-border">
+          <div className="flex items-center space-x-2">
+            <button className="px-3 py-1 text-sm text-canopy-textMuted hover:text-canopy-text">←</button>
+            <button className="px-3 py-1 text-sm bg-canopy-blue text-white rounded">1</button>
+            <button className="px-3 py-1 text-sm text-canopy-textMuted hover:text-canopy-text">2</button>
+            <button className="px-3 py-1 text-sm text-canopy-textMuted hover:text-canopy-text">→</button>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <select className="text-sm border border-canopy-border rounded px-2 py-1">
+              <option>50</option>
+              <option>100</option>
+              <option>200</option>
+            </select>
+            <span className="text-sm text-canopy-textMuted">per page</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
