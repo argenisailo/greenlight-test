@@ -1,36 +1,88 @@
-/* Additional component-specific styles */
-.client-card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200;
+/* Canopy-inspired component styles */
+.canopy-sidebar {
+  @apply bg-canopy-sidebar text-white fixed left-0 top-0 h-full w-16 flex flex-col items-center py-4 space-y-4 z-50;
 }
 
-.client-card:hover {
-  @apply shadow-lg transform translate-y-0.5;
+.canopy-sidebar-icon {
+  @apply w-10 h-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-canopy-sidebarHover transition-colors duration-200 cursor-pointer;
 }
 
-.search-input {
-  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
+.canopy-sidebar-icon.active {
+  @apply text-white bg-canopy-blue;
 }
 
-.btn-primary {
-  @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+.canopy-main-content {
+  @apply ml-16 min-h-screen bg-canopy-bg;
 }
 
-.btn-secondary {
-  @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+.canopy-header {
+  @apply bg-white border-b border-canopy-border px-6 py-4;
 }
 
-.tab-active {
-  @apply border-primary-500 text-primary-600 bg-primary-50;
+.canopy-page-title {
+  @apply text-2xl font-semibold text-canopy-text mb-1;
 }
 
-.tab-inactive {
-  @apply border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300;
+.canopy-tabs {
+  @apply flex space-x-0 border-b border-canopy-border bg-white;
+}
+
+.canopy-tab {
+  @apply px-4 py-3 text-sm font-medium text-canopy-textMuted border-b-2 border-transparent hover:text-canopy-text transition-colors cursor-pointer;
+}
+
+.canopy-tab.active {
+  @apply text-canopy-blue border-canopy-blue;
+}
+
+.canopy-table {
+  @apply min-w-full bg-white;
+}
+
+.canopy-table th {
+  @apply px-4 py-3 text-left text-xs font-medium text-canopy-textMuted uppercase tracking-wider border-b border-canopy-border;
+}
+
+.canopy-table td {
+  @apply px-4 py-4 text-sm text-canopy-text border-b border-canopy-border;
+}
+
+.canopy-table tr:hover {
+  @apply bg-gray-50;
+}
+
+.canopy-btn-primary {
+  @apply bg-canopy-blue hover:bg-canopy-blueHover text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-canopy-blue focus:ring-offset-2;
+}
+
+.canopy-btn-secondary {
+  @apply bg-white border border-canopy-border text-canopy-text hover:bg-gray-50 font-medium px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-canopy-blue focus:ring-offset-2;
+}
+
+.canopy-search-input {
+  @apply w-full px-3 py-2 border border-canopy-border rounded-lg focus:ring-2 focus:ring-canopy-blue focus:border-transparent bg-white text-canopy-text placeholder-canopy-textMuted;
+}
+
+.canopy-status-indicator {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.canopy-status-active {
+  @apply bg-green-100 text-green-800;
+}
+
+.canopy-status-inactive {
+  @apply bg-gray-100 text-gray-600;
+}
+
+.canopy-status-prospect {
+  @apply bg-blue-100 text-blue-800;
 }
 
 /* Loading spinner */
-.spinner {
+.canopy-spinner {
   border: 2px solid #f3f3f3;
-  border-top: 2px solid #3b82f6;
+  border-top: 2px solid #4f7cff;
   border-radius: 50%;
   width: 20px;
   height: 20px;
