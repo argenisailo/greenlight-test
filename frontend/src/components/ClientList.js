@@ -9,12 +9,12 @@ const ClientList = ({ clients, loading, onClientDeleted, searchTerm, selectedCli
   const [activeTab, setActiveTab] = useState('active');
 
   const tabs = [
-    { id: 'active', label: 'Active Clients', count: clients.filter(c => c.ownership?.relationship_type !== 'prospect').length },
+    { id: 'active', label: 'All Clients', count: clients.filter(c => c.ownership?.relationship_type !== 'prospect').length },
     { id: 'business', label: 'Business', count: clients.filter(c => c.type === 'company').length },
-    { id: 'individual', label: 'Individual', count: clients.filter(c => c.type === 'person').length },
-    { id: 'prospect', label: 'Prospect', count: clients.filter(c => c.ownership?.relationship_type === 'prospect').length },
-    { id: 'groups', label: 'Groups with no portal users', count: 0 },
-    { id: 'kc', label: 'KC Operations', count: 0 },
+    { id: 'individual', label: 'Personal', count: clients.filter(c => c.type === 'person').length },
+    // { id: 'prospect', label: 'Prospect', count: clients.filter(c => c.ownership?.relationship_type === 'prospect').length },
+    // { id: 'groups', label: 'Groups with no portal users', count: 0 },
+    // { id: 'kc', label: 'KC Operations', count: 0 },
   ];
 
   const handleDeleteClient = async (clientId, clientName) => {

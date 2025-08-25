@@ -19,7 +19,7 @@ const Header = ({
         {/* Page Title and Add Button */}
         <div className="flex items-center justify-between w-full">
           <div>
-            <h1 className="canopy-page-title">Client List</h1>
+            <h1 className="canopy-page-title">Clients</h1>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -30,7 +30,7 @@ const Header = ({
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-canopy-textMuted" />
                   <input
                     type="text"
-                    placeholder="Search client list"
+                    placeholder="Search clients"
                     value={searchTerm}
                     onChange={(e) => onSearchChange(e.target.value)}
                     className="canopy-search-input pl-10 w-80"

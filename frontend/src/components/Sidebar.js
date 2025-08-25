@@ -3,15 +3,15 @@ import { useLocation } from 'react-router-dom';
 import { 
   Users, 
   Plus, 
-  CheckSquare, 
-  User, 
-  Folder, 
-  Clock, 
-  Settings, 
-  BarChart3,
-  FileText,
-  Calendar,
-  MessageCircle
+  // CheckSquare, 
+  // User, 
+  Folder,
+  // Clock, 
+  // Settings, 
+  // BarChart3,
+  // FileText,
+  // Calendar,
+  // MessageCircle
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -20,15 +20,15 @@ const Sidebar = () => {
   const sidebarItems = [
     { icon: Users, path: '/', label: 'Clients', active: true },
     { icon: Plus, path: '/create', label: 'Add Client' },
-    { icon: CheckSquare, path: '/tasks', label: 'Tasks' },
-    { icon: User, path: '/contacts', label: 'Contacts' },
+    // { icon: CheckSquare, path: '/tasks', label: 'Tasks' },
+    // { icon: User, path: '/contacts', label: 'Contacts' },
     { icon: Folder, path: '/documents', label: 'Documents' },
-    { icon: Clock, path: '/time', label: 'Time Tracking' },
-    { icon: BarChart3, path: '/reports', label: 'Reports' },
-    { icon: FileText, path: '/templates', label: 'Templates' },
-    { icon: Calendar, path: '/calendar', label: 'Calendar' },
-    { icon: MessageCircle, path: '/messages', label: 'Messages' },
-    { icon: Settings, path: '/settings', label: 'Settings' },
+    // { icon: Clock, path: '/time', label: 'Time Tracking' },
+    // { icon: BarChart3, path: '/reports', label: 'Reports' },
+    // { icon: FileText, path: '/templates', label: 'Templates' },
+    // { icon: Calendar, path: '/calendar', label: 'Calendar' },
+    // { icon: MessageCircle, path: '/messages', label: 'Messages' },
+    // { icon: Settings, path: '/settings', label: 'Settings' },
   ];
 
   return (

@@ -11,21 +11,35 @@ const CreateClient = ({ onClientCreated }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     // Person fields
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    address: '',
-    date_of_birth: '',
-    company: '',
-    position: '',
+    name: '',
+    spouse_name: '',
+    filing_details: '',
+    ssn: '',
+    spouse_ssn: '',
+    date_birth: '',
+    spouse_date_birth: '',
     
     // Company fields
-    company_name: '',
-    contact_person: '',
-    website: '',
+    business_name: '',
+    dba: '',
+    contact_name: '',
+    ein: '',
+    incorporation_date: '',
+    incorporation_state: '',
     industry: '',
-    size: '',
+
+    // Common fields
+    filing_status: '',
+    email: '',
+    secondary_email: '',
+    phone: '',
+    additional_phones: '',
+    address: '',
+    city: '',
+    country: '',
+    sales_rep: '',
+    manager: '',
+    language: '',
     
     // Ownership fields
     primary_owner: '',
@@ -44,32 +58,59 @@ const CreateClient = ({ onClientCreated }) => {
 
   const validateForm = () => {
     if (clientType === 'person') {
-      if (!formData.first_name || !formData.last_name) {
-        toast.error('First name and last name are required for persons');
+      if (!formData.name) {
+        toast.error('Name is required for persons');
+        return false;
+      }
+      if (!formData.filing_status) {
+        toast.error('Filing status is required');
+        return false;
+      }
+      if (!formData.filing_details) {
+        toast.error('Filing details are required');
         return false;
       }
       if (!formData.email) {
         toast.error('Email is required');
+        return false;
+      }
+      if (!formData.phone) {
+        toast.error('Phone number is required');
+        return false;
+      }
+      if (!formData.ssn) {
+        toast.error('SSN is required');
+        return false;
+      }
+      if (!formData.date_birth) {
+        toast.error('Date of birth is required');
         return false;
       }
     } else {
-      if (!formData.company_name) {
-        toast.error('Company name is required');
+      if (!formData.business_name) {
+        toast.error('Business name is required');
         return false;
       }
-      if (!formData.contact_person) {
-        toast.error('Contact person is required for companies');
+      if (!formData.contact_name) {
+        toast.error('Contact name is required');
+        return false;
+      }
+      if (!formData.filing_status) {
+        toast.error('Filing status is required');
         return false;
       }
       if (!formData.email) {
         toast.error('Email is required');
         return false;
       }
-    }
-    
-    if (!formData.primary_owner) {
-      toast.error('Primary owner is required');
-      return false;
+      if (!formData.phone) {
+        toast.error('Phone number is required');
+        return false;
+      }
+      if (!formData.ein) {
+        toast.error('EIN is required');
+        return false;
+      }
     }
     
     return true;
@@ -91,23 +132,43 @@ const CreateClient = ({ onClientCreated }) => {
       const clientData = {
         type: clientType,
         data: clientType === 'person' ? {
-          first_name: formData.first_name,
-          last_name: formData.last_name,
+          name: formData.name,
+          spouse_name: formData.spouse_name || null,
+          filing_status: formData.filing_status,
+          filing_details: formData.filing_details,
           email: formData.email,
+          secondary_email: formData.secondary_email || null,
           phone: formData.phone || null,
+          additional_phones: formData.additional_phones || null,
           address: formData.address || null,
-          date_of_birth: formData.date_of_birth || null,
-          company: formData.company || null,
-          position: formData.position || null,
+          city: formData.city || null,
+          country: formData.country || null,
+          ssn: formData.ssn,
+          spouse_ssn: formData.spouse_ssn || null,
+          date_birth: formData.date_birth,
+          spouse_date_birth: formData.spouse_date_birth || null,
+          sales_rep: formData.sales_rep || null,
+          manager: formData.manager || null,
+          language: formData.language || null
         } : {
-          company_name: formData.company_name,
-          contact_person: formData.contact_person,
+          business_name: formData.business_name,
+          dba: formData.dba || null,
+          contact_name: formData.contact_name,
+          filing_status: formData.filing_status,
           email: formData.email,
+          secondary_email: formData.secondary_email || null,
           phone: formData.phone || null,
+          additional_phones: formData.additional_phones || null,
           address: formData.address || null,
-          website: formData.website || null,
+          city: formData.city || null,
+          country: formData.country || null,
+          ein: formData.ein,
+          incorporation_date: formData.incorporation_date || null,
+          incorporation_state: formData.incorporation_state || null,
           industry: formData.industry || null,
-          size: formData.size || null,
+          sales_rep: formData.sales_rep || null,
+          manager: formData.manager || null,
+          language: formData.language || null
         },
         ownership: {
           primary_owner: formData.primary_owner,
@@ -186,6 +247,42 @@ const CreateClient = ({ onClientCreated }) => {
           </div>
         </div>
 
+        {/* Client Existence */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Client Existence</h2>
+          <div className="mt-6">
+            {clientType === 'person' ? (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Search by SSN
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  required
+                />
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Search by EIN
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  required
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Client Information */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -197,144 +294,126 @@ const CreateClient = ({ onClientCreated }) => {
               <>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name *
+                    Client Name *
                   </label>
                   <input
                     type="text"
-                    name="first_name"
-                    value={formData.first_name}
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     required
                   />
                 </div>
-                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name *
+                    Spouse Name
                   </label>
                   <input
                     type="text"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Company
-                  </label>
-                  <input
-                    type="text"
-                    name="company"
-                    value={formData.company}
+                    name="spouse_name"
+                    value={formData.spouse_name}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
                 </div>
-                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Position
+                    Filing Status *
                   </label>
-                  <input
-                    type="text"
-                    name="position"
-                    value={formData.position}
+                  <select
+                    name="filing_status"
+                    value={formData.filing_status}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  />
+                  >
+                    <option value="">Select status</option>
+                    <option value="1040">1040</option>
+                    <option value="1040NR">1040NR</option>
+                    <option value="1040NR_5472">1040NR - 5472</option>
+                  </select>
                 </div>
-                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Date of Birth
+                    Filing Details *
                   </label>
-                  <input
-                    type="date"
-                    name="date_of_birth"
-                    value={formData.date_of_birth}
+                  <select
+                    name="filing_details"
+                    value={formData.filing_details}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  />
+                  >
+                    <option value="">Select details</option>
+                    <option value="single">Single</option>
+                    <option value="married_jointly">Married Filing Jointly</option>
+                    <option value="married_separately">Married Filing Separately</option>
+                    <option value="head_of_household">Head of Household</option>
+                    <option value="surviving_spouse">Surviving Spouse</option>
+                  </select>
                 </div>
               </>
             ) : (
               <>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Company Name *
+                    Business Name *
                   </label>
                   <input
                     type="text"
-                    name="company_name"
-                    value={formData.company_name}
+                    name="business_name"
+                    value={formData.business_name}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     required
                   />
                 </div>
-                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Contact Person *
+                    DBA
                   </label>
                   <input
                     type="text"
-                    name="contact_person"
-                    value={formData.contact_person}
+                    name="dba"
+                    value={formData.dba}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     required
                   />
                 </div>
-                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Website
-                  </label>
-                  <input
-                    type="url"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Industry
+                    Contact Name *
                   </label>
                   <input
                     type="text"
-                    name="industry"
-                    value={formData.industry}
+                    name="contact_name"
+                    value={formData.contact_name}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    required
                   />
                 </div>
-                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Company Size
+                    Filing Status *
                   </label>
                   <select
-                    name="size"
-                    value={formData.size}
+                    name="filing_status"
+                    value={formData.filing_status}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
-                    <option value="">Select size</option>
-                    <option value="1-10">1-10 employees</option>
-                    <option value="11-50">11-50 employees</option>
-                    <option value="51-200">51-200 employees</option>
-                    <option value="201-500">201-500 employees</option>
-                    <option value="501-1000">501-1000 employees</option>
-                    <option value="1000+">1000+ employees</option>
+                    <option value="">Select status</option>
+                    <option value="1120">1120</option>
+                    <option value="1120_5472">1120 - 5472</option>
+                    <option value="5471">5471</option>
+                    <option value="1120S">1120S</option>
+                    <option value="1065">1065</option>
+                    <option value="1065_8805/04">1065 - 8805/04</option>
+                    <option value="990">990</option>
+                    <option value="990_EZ">990 EZ</option>
+                    <option value="1042S">1042S</option>
+                    <option value="sch_c">Sch C</option>
                   </select>
                 </div>
               </>
@@ -354,10 +433,22 @@ const CreateClient = ({ onClientCreated }) => {
                 required
               />
             </div>
-            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone
+                Secondary Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.secondary_email}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number *
               </label>
               <input
                 type="tel"
@@ -367,9 +458,20 @@ const CreateClient = ({ onClientCreated }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Additional Phone Numbers
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.additional_phones}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
           </div>
-          
-          <div className="mt-6">
+          <div className="mt-6 gap-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Address
             </label>
@@ -380,6 +482,179 @@ const CreateClient = ({ onClientCreated }) => {
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                City
+              </label>
+              <input
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Country
+              </label>
+              <input
+                type="text"
+                name="country"
+                value={formData.country}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            {clientType === 'person' ? (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      SSN *
+                    </label>
+                    <input
+                      type="text"
+                      name="ssn"
+                      value={formData.ssn}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Spouse SSN
+                    </label>
+                    <input
+                      type="text"
+                      name="spouse_ssn"
+                      value={formData.spouse_ssn}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Date of Birth *
+                    </label>
+                    <input
+                      type="text"
+                      name="date_birth"
+                      value={formData.date_birth}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Sapouse Date of Birth
+                    </label>
+                    <input
+                      type="text"
+                      name="spouse_date_birth"
+                      value={formData.spouse_date_birth}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      EIN *
+                    </label>
+                    <input
+                      type="text"
+                      name="ein"
+                      value={formData.ein}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Incorporation Date
+                    </label>
+                    <input
+                      type="text"
+                      name="incorporation_date"
+                      value={formData.incorporation_date}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Incorporation State
+                    </label>
+                    <input
+                      type="text"
+                      name="incorporation_state"
+                      value={formData.incorporation_state}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Industry
+                    </label>
+                    <input
+                      type="text"
+                      name="industry"
+                      value={formData.industry}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                </>
+              )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Sales Rep
+              </label>
+              <input
+                type="text"
+                name="sales_rep"
+                value={formData.sales_rep}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Client Manager
+              </label>
+              <input
+                type="text"
+                name="client_manager"
+                value={formData.client_manager}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Language
+              </label>
+              <input
+                type="text"
+                name="language"
+                value={formData.language}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
           </div>
         </div>
 

@@ -12,7 +12,7 @@ const AuthProvider = ({ onLogin }) => {
               <div className="w-8 h-8 border-2 border-white transform rotate-45"></div>
             </div>
             <h1 className="text-2xl font-semibold text-canopy-text mb-2">
-              Client Management System
+              Greenlight App
             </h1>
             <p className="text-canopy-textMuted">
               Sign in with your Microsoft account to access your clients
@@ -40,13 +40,13 @@ const AuthProvider = ({ onLogin }) => {
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-canopy-border">
+          {/* <div className="mt-8 pt-6 border-t border-canopy-border">
             <div className="text-xs text-canopy-textMuted text-center space-y-1">
               <p>🔒 Secure enterprise authentication</p>
               <p>📊 Client management with real-time search</p>
               <p>📁 SharePoint integration for documents</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

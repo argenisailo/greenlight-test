@@ -119,7 +119,7 @@ function App() {
       <div className="min-h-screen bg-canopy-bg flex items-center justify-center">
         <div className="text-center">
           <div className="canopy-spinner mx-auto mb-4"></div>
-          <p className="text-canopy-textMuted">Loading Client Management System...</p>
+          <p className="text-canopy-textMuted">Loading Greenlight App...</p>
         </div>
       </div>
     );
